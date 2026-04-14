@@ -1,86 +1,56 @@
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * UC2: Add Passenger Bogies using ArrayList
- * Demonstrates dynamic insertion, removal, and search operations.
- *
- * @author Chaitanya
- * @version 1.0
- */
-
-// Passenger Bogie Class
 class PassengerBogie {
 
+    private String id;
     private String type;
     private int capacity;
 
-    public PassengerBogie(String type, int capacity) {
+    public PassengerBogie(String id, String type, int capacity) {
+        this.id = id;
         this.type = type;
         this.capacity = capacity;
     }
 
-    public String getType() {
-        return type;
+    public String getId() {
+        return id;
     }
 
     public void display() {
-        System.out.println(type + " | Capacity: " + capacity);
+        System.out.println(id + " | " + type + " | Capacity: " + capacity);
     }
 }
 
-// Train Class
 class Train {
 
     private String trainName;
     private ArrayList<PassengerBogie> bogies;
+    private Set<String> bogieIds;
 
     public Train(String trainName) {
         this.trainName = trainName;
         this.bogies = new ArrayList<>();
+        this.bogieIds = new HashSet<>();
     }
 
-    // Add bogie
     public void addBogie(PassengerBogie bogie) {
+
+        if (bogieIds.contains(bogie.getId())) {
+            System.out.println(" Duplicate Bogie ID not allowed: " + bogie.getId());
+            return;
+        }
+
         bogies.add(bogie);
-        System.out.println("✅ Added: " + bogie.getType());
+        bogieIds.add(bogie.getId());
+
+        System.out.println(" Added Bogie: " + bogie.getId());
     }
 
-    // Remove bogie
-    public void removeBogie(String type) {
-
-        for (PassengerBogie b : bogies) {
-            if (b.getType().equalsIgnoreCase(type)) {
-                bogies.remove(b);
-                System.out.println("❌ Removed: " + type);
-                return;
-            }
-        }
-
-        System.out.println("⚠️ Bogie not found: " + type);
-    }
-
-    // Check existence
-    public void checkBogie(String type) {
-
-        for (PassengerBogie b : bogies) {
-            if (b.getType().equalsIgnoreCase(type)) {
-                System.out.println("✔️ Bogie exists: " + type);
-                return;
-            }
-        }
-
-        System.out.println("❌ Bogie does not exist: " + type);
-    }
-
-    // Display consist
     public void displayConsist() {
 
         System.out.println("\n=== Train Consist ===");
-
-        if (bogies.isEmpty()) {
-            System.out.println("No bogies attached.");
-            return;
-        }
 
         for (PassengerBogie b : bogies) {
             b.display();
@@ -88,28 +58,16 @@ class Train {
     }
 }
 
-// Main Class
 class TrainConsistManagementApp {
 
     public static void main(String[] args) {
 
         Train train = new Train("Express Line");
 
-        // Add bogies
-        train.addBogie(new PassengerBogie("Sleeper", 72));
-        train.addBogie(new PassengerBogie("AC Chair", 60));
-        train.addBogie(new PassengerBogie("First Class", 40));
+        train.addBogie(new PassengerBogie("BG101", "Sleeper", 72));
+        train.addBogie(new PassengerBogie("BG102", "AC Chair", 60));
+        train.addBogie(new PassengerBogie("BG101", "First Class", 40));
 
-        // Display
-        train.displayConsist();
-
-        // Check bogie
-        train.checkBogie("Sleeper");
-
-        // Remove bogie
-        train.removeBogie("AC Chair");
-
-        // Display again
         train.displayConsist();
     }
 }
