@@ -1,6 +1,6 @@
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 class PassengerBogie {
 
@@ -32,20 +32,29 @@ class Train {
     public Train(String trainName) {
         this.trainName = trainName;
         this.bogies = new ArrayList<>();
-        this.bogieIds = new HashSet<>();
+        this.bogieIds = new TreeSet<>();
     }
 
     public void addBogie(PassengerBogie bogie) {
 
         if (bogieIds.contains(bogie.getId())) {
-            System.out.println(" Duplicate Bogie ID not allowed: " + bogie.getId());
+            System.out.println("❌ Duplicate Bogie ID not allowed: " + bogie.getId());
             return;
         }
 
         bogies.add(bogie);
         bogieIds.add(bogie.getId());
 
-        System.out.println(" Added Bogie: " + bogie.getId());
+        System.out.println("✅ Added Bogie: " + bogie.getId());
+    }
+
+    public void displaySortedIds() {
+
+        System.out.println("\n=== Sorted Bogie IDs ===");
+
+        for (String id : bogieIds) {
+            System.out.println(id);
+        }
     }
 
     public void displayConsist() {
@@ -64,10 +73,12 @@ class TrainConsistManagementApp {
 
         Train train = new Train("Express Line");
 
-        train.addBogie(new PassengerBogie("BG101", "Sleeper", 72));
-        train.addBogie(new PassengerBogie("BG102", "AC Chair", 60));
-        train.addBogie(new PassengerBogie("BG101", "First Class", 40));
+        train.addBogie(new PassengerBogie("BG105", "Sleeper", 72));
+        train.addBogie(new PassengerBogie("BG101", "AC Chair", 60));
+        train.addBogie(new PassengerBogie("BG103", "First Class", 40));
+        train.addBogie(new PassengerBogie("BG101", "Duplicate", 50));
 
         train.displayConsist();
+        train.displaySortedIds();
     }
 }
