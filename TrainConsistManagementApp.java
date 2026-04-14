@@ -1,61 +1,42 @@
 import java.util.*;
 
-class Bogie {
-
-    private String id;
-    private String type;
-
-    public Bogie(String id, String type) {
-        this.id = id;
-        this.type = type;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void display() {
-        System.out.println(id + " | " + type);
-    }
-}
-
-class Train {
-
-    private List<Bogie> bogies;
-
-    public Train() {
-        bogies = new ArrayList<>();
-    }
-
-    public void addBogie(Bogie b) {
-        bogies.add(b);
-    }
-
-    public void search(String target) {
-
-        for (Bogie b : bogies) {
-            if (b.getId().equalsIgnoreCase(target)) {
-                System.out.println("✅ Bogie Found:");
-                b.display();
-                return;
-            }
-        }
-
-        System.out.println("❌ Bogie not found: " + target);
-    }
-}
-
 class TrainConsistManagementApp {
 
     public static void main(String[] args) {
 
-        Train train = new Train();
+        String[] bogieIds = {
+                "BG101",
+                "BG102",
+                "BG103",
+                "BG104",
+                "BG105"
+        };
 
-        train.addBogie(new Bogie("BG101", "Sleeper"));
-        train.addBogie(new Bogie("BG102", "AC Chair"));
-        train.addBogie(new Bogie("BG103", "First Class"));
+        Arrays.sort(bogieIds);
 
-        train.search("BG102");
-        train.search("BG999");
+        String target = "BG103";
+
+        int left = 0;
+        int right = bogieIds.length - 1;
+        boolean found = false;
+
+        while (left <= right) {
+
+            int mid = (left + right) / 2;
+
+            if (bogieIds[mid].equals(target)) {
+                System.out.println("✅ Found Bogie ID: " + bogieIds[mid]);
+                found = true;
+                break;
+            } else if (bogieIds[mid].compareTo(target) < 0) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        if (!found) {
+            System.out.println("❌ Bogie not found: " + target);
+        }
     }
 }
