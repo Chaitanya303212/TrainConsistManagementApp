@@ -13,10 +13,6 @@ class Bogie {
         this.capacity = capacity;
     }
 
-    public int getCapacity() {
-        return capacity;
-    }
-
     public String getType() {
         return type;
     }
@@ -38,14 +34,20 @@ class Train {
         bogies.add(b);
     }
 
-    public void filterHighCapacity(int minCapacity) {
+    public void groupByType() {
 
-        System.out.println("\n=== High Capacity Passenger Bogies ===");
+        Map<String, List<Bogie>> grouped =
+                bogies.stream()
+                        .collect(Collectors.groupingBy(Bogie::getType));
 
-        bogies.stream()
-                .filter(b -> b.getType().contains("Passenger") || b.getType().contains("Sleeper") || b.getType().contains("AC"))
-                .filter(b -> b.getCapacity() >= minCapacity)
-                .forEach(Bogie::display);
+        System.out.println("\n=== Bogies Grouped by Type ===");
+
+        for (String type : grouped.keySet()) {
+            System.out.println("\n" + type + ":");
+            for (Bogie b : grouped.get(type)) {
+                b.display();
+            }
+        }
     }
 }
 
@@ -55,11 +57,12 @@ class TrainConsistManagementApp {
 
         Train train = new Train();
 
-        train.addBogie(new Bogie("BG101", "Sleeper Passenger", 72));
-        train.addBogie(new Bogie("BG102", "AC Chair Passenger", 56));
-        train.addBogie(new Bogie("BG103", "First Class Passenger", 40));
+        train.addBogie(new Bogie("BG101", "Sleeper", 72));
+        train.addBogie(new Bogie("BG102", "AC Chair", 56));
+        train.addBogie(new Bogie("BG103", "Sleeper", 72));
         train.addBogie(new Bogie("BG104", "Goods Rectangular", 100));
+        train.addBogie(new Bogie("BG105", "Goods Cylindrical", 120));
 
-        train.filterHighCapacity(50);
+        train.groupByType();
     }
 }
