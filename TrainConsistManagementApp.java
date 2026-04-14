@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.*;
 
 class Bogie {
 
@@ -14,6 +15,10 @@ class Bogie {
 
     public int getCapacity() {
         return capacity;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public void display() {
@@ -33,19 +38,14 @@ class Train {
         bogies.add(b);
     }
 
-    public void displaySortedByCapacity() {
+    public void filterHighCapacity(int minCapacity) {
 
-        Collections.sort(bogies, new Comparator<Bogie>() {
-            public int compare(Bogie b1, Bogie b2) {
-                return b2.getCapacity() - b1.getCapacity();
-            }
-        });
+        System.out.println("\n=== High Capacity Passenger Bogies ===");
 
-        System.out.println("\n=== Bogies Sorted by Capacity ===");
-
-        for (Bogie b : bogies) {
-            b.display();
-        }
+        bogies.stream()
+                .filter(b -> b.getType().contains("Passenger") || b.getType().contains("Sleeper") || b.getType().contains("AC"))
+                .filter(b -> b.getCapacity() >= minCapacity)
+                .forEach(Bogie::display);
     }
 }
 
@@ -55,10 +55,11 @@ class TrainConsistManagementApp {
 
         Train train = new Train();
 
-        train.addBogie(new Bogie("BG101", "Sleeper", 72));
-        train.addBogie(new Bogie("BG102", "AC Chair", 56));
-        train.addBogie(new Bogie("BG103", "First Class", 40));
+        train.addBogie(new Bogie("BG101", "Sleeper Passenger", 72));
+        train.addBogie(new Bogie("BG102", "AC Chair Passenger", 56));
+        train.addBogie(new Bogie("BG103", "First Class Passenger", 40));
+        train.addBogie(new Bogie("BG104", "Goods Rectangular", 100));
 
-        train.displaySortedByCapacity();
+        train.filterHighCapacity(50);
     }
 }
