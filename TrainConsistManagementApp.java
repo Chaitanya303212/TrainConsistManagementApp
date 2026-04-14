@@ -1,42 +1,72 @@
 import java.util.*;
 
+class EmptyTrainException extends Exception {
+    public EmptyTrainException(String msg) {
+        super(msg);
+    }
+}
+
+class Bogie {
+
+    private String id;
+
+    public Bogie(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+}
+
+class Train {
+
+    private List<Bogie> bogies;
+
+    public Train() {
+        bogies = new ArrayList<>();
+    }
+
+    public void addBogie(Bogie b) {
+        bogies.add(b);
+    }
+
+    public void search(String target) throws EmptyTrainException {
+
+        if (bogies.isEmpty()) {
+            throw new EmptyTrainException("Train has no bogies to search");
+        }
+
+        for (Bogie b : bogies) {
+            if (b.getId().equalsIgnoreCase(target)) {
+                System.out.println("✅ Found Bogie: " + target);
+                return;
+            }
+        }
+
+        System.out.println("❌ Bogie not found: " + target);
+    }
+}
+
 class TrainConsistManagementApp {
 
     public static void main(String[] args) {
 
-        String[] bogieIds = {
-                "BG101",
-                "BG102",
-                "BG103",
-                "BG104",
-                "BG105"
-        };
+        Train train = new Train();
 
-        Arrays.sort(bogieIds);
-
-        String target = "BG103";
-
-        int left = 0;
-        int right = bogieIds.length - 1;
-        boolean found = false;
-
-        while (left <= right) {
-
-            int mid = (left + right) / 2;
-
-            if (bogieIds[mid].equals(target)) {
-                System.out.println("✅ Found Bogie ID: " + bogieIds[mid]);
-                found = true;
-                break;
-            } else if (bogieIds[mid].compareTo(target) < 0) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
+        try {
+            train.search("BG101");
+        } catch (EmptyTrainException e) {
+            System.out.println("⚠️ " + e.getMessage());
         }
 
-        if (!found) {
-            System.out.println("❌ Bogie not found: " + target);
+        train.addBogie(new Bogie("BG101"));
+        train.addBogie(new Bogie("BG102"));
+
+        try {
+            train.search("BG102");
+        } catch (EmptyTrainException e) {
+            System.out.println("⚠️ " + e.getMessage());
         }
     }
 }
