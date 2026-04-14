@@ -13,12 +13,8 @@ class Bogie {
         this.capacity = capacity;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void display() {
-        System.out.println(id + " | " + type + " | Capacity: " + capacity);
+    public int getCapacity() {
+        return capacity;
     }
 }
 
@@ -34,20 +30,14 @@ class Train {
         bogies.add(b);
     }
 
-    public void groupByType() {
+    public void totalCapacity() {
 
-        Map<String, List<Bogie>> grouped =
-                bogies.stream()
-                        .collect(Collectors.groupingBy(Bogie::getType));
+        int total = bogies.stream()
+                .map(Bogie::getCapacity)
+                .reduce(0, (a, b) -> a + b);
 
-        System.out.println("\n=== Bogies Grouped by Type ===");
-
-        for (String type : grouped.keySet()) {
-            System.out.println("\n" + type + ":");
-            for (Bogie b : grouped.get(type)) {
-                b.display();
-            }
-        }
+        System.out.println("\n=== Total Seating Capacity ===");
+        System.out.println("Total Seats: " + total);
     }
 }
 
@@ -59,10 +49,9 @@ class TrainConsistManagementApp {
 
         train.addBogie(new Bogie("BG101", "Sleeper", 72));
         train.addBogie(new Bogie("BG102", "AC Chair", 56));
-        train.addBogie(new Bogie("BG103", "Sleeper", 72));
+        train.addBogie(new Bogie("BG103", "First Class", 40));
         train.addBogie(new Bogie("BG104", "Goods Rectangular", 100));
-        train.addBogie(new Bogie("BG105", "Goods Cylindrical", 120));
 
-        train.groupByType();
+        train.totalCapacity();
     }
 }
