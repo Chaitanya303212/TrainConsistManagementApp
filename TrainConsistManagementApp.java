@@ -1,5 +1,4 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 class Bogie {
 
@@ -13,10 +12,6 @@ class Bogie {
         this.capacity = capacity;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public int getCapacity() {
         return capacity;
     }
@@ -28,40 +23,28 @@ class Bogie {
 
 class Train {
 
-    private String trainName;
-    private Map<String, Bogie> bogieMap;
+    private List<Bogie> bogies;
 
-    public Train(String trainName) {
-        this.trainName = trainName;
-        this.bogieMap = new HashMap<>();
+    public Train() {
+        bogies = new ArrayList<>();
     }
 
-    public void addBogie(Bogie bogie) {
-
-        if (bogieMap.containsKey(bogie.getId())) {
-            System.out.println("❌ Duplicate Bogie ID not allowed: " + bogie.getId());
-            return;
-        }
-
-        bogieMap.put(bogie.getId(), bogie);
-        System.out.println("✅ Added Bogie: " + bogie.getId());
+    public void addBogie(Bogie b) {
+        bogies.add(b);
     }
 
-    public void displayConsist() {
+    public void displaySortedByCapacity() {
 
-        System.out.println("\n=== Train Consist ===");
+        Collections.sort(bogies, new Comparator<Bogie>() {
+            public int compare(Bogie b1, Bogie b2) {
+                return b2.getCapacity() - b1.getCapacity();
+            }
+        });
 
-        for (Bogie b : bogieMap.values()) {
+        System.out.println("\n=== Bogies Sorted by Capacity ===");
+
+        for (Bogie b : bogies) {
             b.display();
-        }
-    }
-
-    public void displayCapacity(String id) {
-
-        if (bogieMap.containsKey(id)) {
-            System.out.println("Capacity of " + id + ": " + bogieMap.get(id).getCapacity());
-        } else {
-            System.out.println("❌ Bogie not found: " + id);
         }
     }
 }
@@ -70,16 +53,12 @@ class TrainConsistManagementApp {
 
     public static void main(String[] args) {
 
-        Train train = new Train("Express Line");
+        Train train = new Train();
 
         train.addBogie(new Bogie("BG101", "Sleeper", 72));
-        train.addBogie(new Bogie("BG102", "AC Chair", 60));
-        train.addBogie(new Bogie("BG103", "Goods Rectangular", 100));
-        train.addBogie(new Bogie("BG101", "Duplicate", 50));
+        train.addBogie(new Bogie("BG102", "AC Chair", 56));
+        train.addBogie(new Bogie("BG103", "First Class", 40));
 
-        train.displayConsist();
-
-        train.displayCapacity("BG102");
-        train.displayCapacity("BG999");
+        train.displaySortedByCapacity();
     }
 }
