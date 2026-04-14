@@ -1,15 +1,63 @@
-import java.util.regex.*;
+import java.util.*;
+import java.util.function.Predicate;
 
-class Validator {
+class GoodsBogie {
 
-    public static boolean validateTrainId(String id) {
-        String pattern = "^TRN-\\d{4}$";
-        return Pattern.matches(pattern, id);
+    private String id;
+    private String type;
+    private String cargo;
+
+    public GoodsBogie(String id, String type, String cargo) {
+        this.id = id;
+        this.type = type;
+        this.cargo = cargo;
     }
 
-    public static boolean validateCargoCode(String code) {
-        String pattern = "^CG-[A-Z]{3}-\\d{3}$";
-        return Pattern.matches(pattern, code);
+    public String getType() {
+        return type;
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void display() {
+        System.out.println(id + " | " + type + " | Cargo: " + cargo);
+    }
+}
+
+class Train {
+
+    private List<GoodsBogie> goods;
+
+    public Train() {
+        goods = new ArrayList<>();
+    }
+
+    public void addGoodsBogie(GoodsBogie b) {
+        goods.add(b);
+    }
+
+    public void checkSafety() {
+
+        Predicate<GoodsBogie> safetyRule = b -> {
+            if (b.getType().equalsIgnoreCase("Cylindrical"))
+                return b.getCargo().equalsIgnoreCase("Liquid");
+            if (b.getType().equalsIgnoreCase("Rectangular"))
+                return !b.getCargo().equalsIgnoreCase("Liquid");
+            return true;
+        };
+
+        System.out.println("\n=== Safety Compliance Check ===");
+
+        goods.stream().forEach(b -> {
+            if (safetyRule.test(b)) {
+                System.out.print("✅ Safe → ");
+            } else {
+                System.out.print("❌ Unsafe → ");
+            }
+            b.display();
+        });
     }
 }
 
@@ -17,16 +65,13 @@ class TrainConsistManagementApp {
 
     public static void main(String[] args) {
 
-        String trainId1 = "TRN-1234";
-        String trainId2 = "TRAIN12";
+        Train train = new Train();
 
-        String cargo1 = "CG-ABC-123";
-        String cargo2 = "CARGO12";
+        train.addGoodsBogie(new GoodsBogie("BG201", "Cylindrical", "Liquid"));
+        train.addGoodsBogie(new GoodsBogie("BG202", "Cylindrical", "Coal"));
+        train.addGoodsBogie(new GoodsBogie("BG203", "Rectangular", "Coal"));
+        train.addGoodsBogie(new GoodsBogie("BG204", "Rectangular", "Liquid"));
 
-        System.out.println("Train ID " + trainId1 + " → " + Validator.validateTrainId(trainId1));
-        System.out.println("Train ID " + trainId2 + " → " + Validator.validateTrainId(trainId2));
-
-        System.out.println("\nCargo Code " + cargo1 + " → " + Validator.validateCargoCode(cargo1));
-        System.out.println("Cargo Code " + cargo2 + " → " + Validator.validateCargoCode(cargo2));
+        train.checkSafety();
     }
 }
