@@ -1,42 +1,73 @@
-/**
- * UC1: Initialize Train and Display Consist Summary
- * Entry point of Train Consist Management App
- *
- * @author Chaitanya
- * @version 1.0
- */
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-// Train Class
-class Train {
+class PassengerBogie {
 
-    private String trainName;
-    private int totalBogies;
+    private String id;
+    private String type;
+    private int capacity;
 
-    public Train(String trainName) {
-        this.trainName = trainName;
-        this.totalBogies = 0;
+    public PassengerBogie(String id, String type, int capacity) {
+        this.id = id;
+        this.type = type;
+        this.capacity = capacity;
     }
 
-    public void displaySummary() {
-        System.out.println("===== Train Consist Summary =====");
-        System.out.println("Train Name: " + trainName);
-        System.out.println("Total Bogies: " + totalBogies);
-        System.out.println("Status: No bogies attached yet.");
-        System.out.println("=================================");
+    public String getId() {
+        return id;
+    }
+
+    public void display() {
+        System.out.println(id + " | " + type + " | Capacity: " + capacity);
     }
 }
 
-// Main Class (as you requested)
+class Train {
+
+    private String trainName;
+    private ArrayList<PassengerBogie> bogies;
+    private Set<String> bogieIds;
+
+    public Train(String trainName) {
+        this.trainName = trainName;
+        this.bogies = new ArrayList<>();
+        this.bogieIds = new HashSet<>();
+    }
+
+    public void addBogie(PassengerBogie bogie) {
+
+        if (bogieIds.contains(bogie.getId())) {
+            System.out.println(" Duplicate Bogie ID not allowed: " + bogie.getId());
+            return;
+        }
+
+        bogies.add(bogie);
+        bogieIds.add(bogie.getId());
+
+        System.out.println(" Added Bogie: " + bogie.getId());
+    }
+
+    public void displayConsist() {
+
+        System.out.println("\n=== Train Consist ===");
+
+        for (PassengerBogie b : bogies) {
+            b.display();
+        }
+    }
+}
+
 class TrainConsistManagementApp {
 
     public static void main(String[] args) {
 
-        System.out.println("🚆 Welcome to Train Consist Management App");
-
-        // Initialize train
         Train train = new Train("Express Line");
 
-        // Display initial consist
-        train.displaySummary();
+        train.addBogie(new PassengerBogie("BG101", "Sleeper", 72));
+        train.addBogie(new PassengerBogie("BG102", "AC Chair", 60));
+        train.addBogie(new PassengerBogie("BG101", "First Class", 40));
+
+        train.displayConsist();
     }
 }
