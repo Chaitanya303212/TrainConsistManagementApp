@@ -1,16 +1,57 @@
 import java.util.*;
-import java.util.stream.*;
 
-class Bogie {
+class InvalidCapacityException extends Exception {
+    public InvalidCapacityException(String msg) {
+        super(msg);
+    }
+}
 
+class PassengerBogie {
+
+    private String id;
     private int capacity;
 
-    public Bogie(int capacity) {
+    public PassengerBogie(String id, int capacity) throws InvalidCapacityException {
+
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Invalid capacity for " + id);
+        }
+
+        this.id = id;
         this.capacity = capacity;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public void display() {
+        System.out.println(id + " | Capacity: " + capacity);
+    }
+}
+
+class Train {
+
+    private List<PassengerBogie> bogies;
+
+    public Train() {
+        bogies = new ArrayList<>();
+    }
+
+    public void addBogie(String id, int capacity) {
+
+        try {
+            PassengerBogie b = new PassengerBogie(id, capacity);
+            bogies.add(b);
+            System.out.println("✅ Added Bogie: " + id);
+        } catch (InvalidCapacityException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
+    }
+
+    public void display() {
+
+        System.out.println("\n=== Train Bogies ===");
+
+        for (PassengerBogie b : bogies) {
+            b.display();
+        }
     }
 }
 
@@ -18,36 +59,13 @@ class TrainConsistManagementApp {
 
     public static void main(String[] args) {
 
-        List<Bogie> bogies = new ArrayList<>();
+        Train train = new Train();
 
-        for (int i = 0; i < 1000000; i++) {
-            bogies.add(new Bogie((i % 100) + 1));
-        }
+        train.addBogie("BG101", 72);
+        train.addBogie("BG102", 0);
+        train.addBogie("BG103", -10);
+        train.addBogie("BG104", 56);
 
-        long startLoop = System.nanoTime();
-
-        int sumLoop = 0;
-        for (Bogie b : bogies) {
-            if (b.getCapacity() > 50) {
-                sumLoop += b.getCapacity();
-            }
-        }
-
-        long endLoop = System.nanoTime();
-
-        long startStream = System.nanoTime();
-
-        int sumStream = bogies.stream()
-                .filter(b -> b.getCapacity() > 50)
-                .mapToInt(Bogie::getCapacity)
-                .sum();
-
-        long endStream = System.nanoTime();
-
-        System.out.println("Loop Result: " + sumLoop);
-        System.out.println("Stream Result: " + sumStream);
-
-        System.out.println("\nLoop Time: " + (endLoop - startLoop) + " ns");
-        System.out.println("Stream Time: " + (endStream - startStream) + " ns");
+        train.display();
     }
 }
