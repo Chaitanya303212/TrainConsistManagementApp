@@ -1,36 +1,60 @@
-class UnsafeCargoException extends Exception {
-    public UnsafeCargoException(String msg) {
-        super(msg);
-    }
-}
+import java.util.*;
 
-class GoodsBogie {
+class PassengerBogie {
 
     private String id;
-    private String type;
-    private String cargo;
+    private int capacity;
 
-    public GoodsBogie(String id, String type) {
+    public PassengerBogie(String id, int capacity) {
         this.id = id;
-        this.type = type;
+        this.capacity = capacity;
     }
 
-    public void assignCargo(String cargo) throws UnsafeCargoException {
-
-        if (type.equalsIgnoreCase("Cylindrical") && !cargo.equalsIgnoreCase("Petroleum")) {
-            throw new UnsafeCargoException("Cylindrical bogie must carry Petroleum");
-        }
-
-        if (type.equalsIgnoreCase("Rectangular") && cargo.equalsIgnoreCase("Petroleum")) {
-            throw new UnsafeCargoException("Rectangular bogie cannot carry Petroleum");
-        }
-
-        this.cargo = cargo;
-        System.out.println("✅ Cargo assigned to " + id);
+    public int getCapacity() {
+        return capacity;
     }
 
     public void display() {
-        System.out.println(id + " | " + type + " | Cargo: " + cargo);
+        System.out.println(id + " | Capacity: " + capacity);
+    }
+}
+
+class Train {
+
+    private List<PassengerBogie> bogies;
+
+    public Train() {
+        bogies = new ArrayList<>();
+    }
+
+    public void addBogie(PassengerBogie b) {
+        bogies.add(b);
+    }
+
+    public void bubbleSort() {
+
+        int n = bogies.size();
+
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+
+                if (bogies.get(j).getCapacity() < bogies.get(j + 1).getCapacity()) {
+
+                    PassengerBogie temp = bogies.get(j);
+                    bogies.set(j, bogies.get(j + 1));
+                    bogies.set(j + 1, temp);
+                }
+            }
+        }
+    }
+
+    public void display() {
+
+        System.out.println("\n=== Sorted Bogies (Bubble Sort) ===");
+
+        for (PassengerBogie b : bogies) {
+            b.display();
+        }
     }
 }
 
@@ -38,18 +62,14 @@ class TrainConsistManagementApp {
 
     public static void main(String[] args) {
 
-        GoodsBogie b1 = new GoodsBogie("BG201", "Cylindrical");
-        GoodsBogie b2 = new GoodsBogie("BG202", "Rectangular");
+        Train train = new Train();
 
-        try {
-            b1.assignCargo("Petroleum");
-            b2.assignCargo("Petroleum");
-        } catch (UnsafeCargoException e) {
-            System.out.println("❌ " + e.getMessage());
-        } finally {
-            System.out.println("\n=== Final Bogie Status ===");
-            b1.display();
-            b2.display();
-        }
+        train.addBogie(new PassengerBogie("BG101", 72));
+        train.addBogie(new PassengerBogie("BG102", 56));
+        train.addBogie(new PassengerBogie("BG103", 40));
+        train.addBogie(new PassengerBogie("BG104", 80));
+
+        train.bubbleSort();
+        train.display();
     }
 }
